@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat with Bot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;600&family=Croissant+One&family=Dancing+Script:wght@400;500&family=Great+Vibes&family=Josefin+Sans:wght@300&family=Playpen+Sans:wght@300&family=Quicksand:wght@500&family=Raleway:wght@300&family=Roboto+Condensed:wght@300&family=Tilt+Prism&display=swap" rel="stylesheet">
+    <style>
+        #chat-container {
+            border: none;
+            padding: 40px;
+            margin: 10px;
+            max-width: 1000px;
+        }
+    
+        .user-message {
+            text-align: right;
+            margin-bottom: 5px;
+            color: #001c30;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            hyphens: auto;
+            background-color: #dafffb;
+            padding: 12px;
+            border-radius: 19px;
+            align-self: flex-end;
+            max-width: fit-content; /* Adjust the max width as needed */
+            margin-left:auto; /* Move the user message to the right */
+            margin-right: 200px;
+        }
+    
+        .bot-message {
+            text-align: left;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            align-self: flex-start;
+            hyphens: auto;
+            margin-bottom: 5px;
+            margin-right: auto;
+            margin-left: 200px;
+            color: #dafffb;
+            align-self: flex-start;
+            max-width: fit-content;
+            background-color: #001c30;
+            padding: 12px;
+            border-radius: 19px;/* Adjust the max width as needed */
+        }
+    
+        #user-input {
+            color: #001c30;
+            background-color: #dafffb;
+            padding: 12px;
+            width: 40%;
+            border: none;
+            font-size: 20px;
+            border-radius: 20px;
+        }
+    
+        h1 {
+            color: #001c30;
+            text-transform: capitalize;
+            padding: 10px;
+            width: 50%;
+            text-shadow: 2px 14px 144px #dafffb;
+        }
+    
+        html {
+            background-repeat: no-repeat;
+            color: #001c30;
+            font-size: 16px;
+            text-transform: capitalize;
+            background-size: 2000px 2000px;
+            font-family: 'Playpen Sans', cursive;
+            background-image: linear-gradient(to left, #176b87, #dafffb);
+            animation: new linear infinite 2s;
+        }
+    
+        @keyframes new {
+            from {
+                background-image: linear-gradient(69deg, #176b87, #dafffb);
+            }
+            to {
+                background-image: linear-gradient(59deg, #dafffb, #176b87);
+            }
+        }
+    
+        #send {
+            padding: 15px;
+            width: 90px;
+            background-color: #001c30;
+            color: #64ccc5;
+            border-radius: 20px;
+            text-transform: uppercase;
+            font-size: 15px;
+            font-family: 'Playpen Sans', cursive;
+            border: none;
+        }
+        #display{
+            margin-left:  280px;
+            margin-right: 280px;
+        }
+        #send:hover {
+            background-color: #dafffb;
+            color: #001c30;
+        }
+        form {
+            margin-top: 20%;
+        }
+    </style>
+    
+</head>
+<body><center><div id="display">
+    <h1>⟢ Chat with my Bot ⟣</h1>
+    
+    <div id="chat-container">
+        <!-- Bot's initial message -->
+        <div class="bot-message">
+            <strong>Bot:</strong> hi, how are you doing?
+        </div>
+    </div>
+
+    <form id="user-form">
+        <label for="user-input">User:</label>
+        <input type="text" id="user-input" autocomplete="off">
+        <input type="button" value="Send" id="send" onclick="sendMessage()">
+    </form></div></center>
+
+    <script>
+        function sendMessage() {
+            const userForm = document.getElementById("user-form");
+            const userInput = document.getElementById("user-input").value;
+            const chatContainer = document.getElementById("chat-container");
+
+            // Display the user's message in the chat
+            const userMessage = document.createElement("div");
+            userMessage.className = "user-message";
+            userMessage.innerHTML = `<strong>You:</strong> ${userInput}`;
+            chatContainer.appendChild(userMessage);
+
+            // Make an AJAX request to the server to get the bot's response
+            fetch("/chat", {
+                method: "POST",
+                body: new URLSearchParams({ user_input: userInput }),
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Display the bot's response in the chat
+                const botMessage = document.createElement("div");
+                botMessage.className = "bot-message";
+                botMessage.innerHTML = data;
+                chatContainer.appendChild(botMessage);
+
+                // Optionally, you can clear the user input field here
+                document.getElementById("user-input").value = "";
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
+
